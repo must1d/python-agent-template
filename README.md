@@ -1,6 +1,6 @@
 # Python agent template
 
-Starting point for a Python project that is built together with a coding agent. It contains a package managed with uv, `ruff` and `ty` as pre-commit hooks, agent rules in `AGENTS.md`, and the caveman and ponytail rules for Cursor.
+Starting point for a Python project that is built together with a coding agent. It contains a package managed with uv, `ruff` and `ty` as pre-commit hooks, and agent rules in `AGENTS.md`.
 
 You can hand this README to your coding agent and ask it to set the project up. The steps below are written so that an agent can follow them in order.
 
@@ -32,49 +32,37 @@ You can hand this README to your coding agent and ask it to set the project up. 
 
 ## Agent setup
 
-### Rules in the repository
-
 `AGENTS.md` holds the rules for coding agents: how to commit, how to write code, how to write docs. Cursor and most other agent harnesses read it automatically from the repository root. It points to `docs/DESIGN.md` for the design and to `docs/TODO.md` for the open work.
 
-Two always-on Cursor rules are already in `.cursor/rules/`, so Cursor needs no further setup:
+`AGENTS.md` asks for the caveman and ponytail style. Both are separate tools that have to be installed once per machine, so they are not part of this repository:
 
-- `caveman.mdc` makes the agent answer in short, plain fragments.
-- `ponytail.mdc` makes the agent pick the simplest solution that works.
+- [caveman](https://github.com/JuliusBrussee/caveman) makes the agent answer in short, plain fragments.
+- [ponytail](https://github.com/DietrichGebert/ponytail) makes the agent pick the simplest solution that works.
 
-To turn a rule off, disable it in the Cursor settings or delete the file. To update a rule, copy the newer file from its repository.
+The steps differ per harness. Most of them write outside this repository, into the user's home directory, so an agent should say what it is about to run and ask first. Both tools need `node` on the PATH.
 
-### Caveman
+### Cursor
 
-Repository: https://github.com/JuliusBrussee/caveman
-
-Caveman has no Cursor plugin and no Cursor hooks. [Issue 405](https://github.com/JuliusBrussee/caveman/issues/405) asks for them and is still open. Cursor plugins need a `.cursor-plugin/plugin.json`, which caveman does not ship. The issue, written in May 2026, also says that Cursor only offers a `sessionStart` hook and no hook that runs on each prompt. The workaround from that issue is the one this template uses: a rule file with `alwaysApply: true`. The cost is that `/caveman lite`, `/caveman ultra` and "stop caveman" do not switch the level in Cursor.
-
-`.cursor/rules/caveman.mdc` is the text of `src/rules/caveman-activate.md` from the caveman repository, with the frontmatter that caveman's own installer writes.
-
-Optional, and it writes outside this repository, so an agent should ask before running it. This installs the caveman skills (for example `caveman-commit` and `caveman-review`) for Cursor in your user directory:
-
-```sh
-npx skills add JuliusBrussee/caveman -a cursor -g
-```
-
-### Ponytail
-
-Repository: https://github.com/DietrichGebert/ponytail
-
-`.cursor/rules/ponytail.mdc` is copied unchanged from that repository.
-
-Ponytail also has real Cursor hooks, which add level switching with `/ponytail lite`, `/ponytail full`, `/ponytail ultra` and `/ponytail off`. They are installed per machine from a clone and need `node` on the PATH, so they cannot be part of this template. They are optional, and an agent should ask before running this:
+Ponytail has Cursor hooks. Install them from a clone, and keep the clone where it is, because the hooks run from it:
 
 ```sh
 git clone https://github.com/DietrichGebert/ponytail
 node ponytail/scripts/cursor-hooks.js install
 ```
 
-This writes to `~/.cursor/hooks.json`. Add `--project` to write `.cursor/hooks.json` in the project instead. The rule file and the hooks are alternatives: while `.cursor/rules/ponytail.mdc` exists, the hooks inject nothing. Delete the rule file if you install the hooks.
+This writes to `~/.cursor/hooks.json`. Open a new chat afterwards. `/ponytail lite`, `/ponytail full`, `/ponytail ultra` and `/ponytail off`, sent as a plain message, switch the level.
+
+Caveman has no Cursor plugin and no Cursor hooks yet. [Issue 405](https://github.com/JuliusBrussee/caveman/issues/405) describes what Cursor needs and how to build it. Read the issue and set up the `sessionStart` hook as it describes, so that caveman is active in every new chat. Keep the entries that are already in `~/.cursor/hooks.json`, such as ponytail's.
+
+Also install the caveman skills (for example `caveman-commit` and `caveman-review`) into your user directory:
+
+```sh
+npx skills add JuliusBrussee/caveman -a cursor -g
+```
 
 ### Claude Code
 
-Claude Code does not use the Cursor rule files. Both tools are plugins there, with hooks and all commands. In a terminal:
+Both tools are plugins with hooks and all commands. In a terminal:
 
 ```sh
 claude plugin marketplace add JuliusBrussee/caveman && claude plugin install caveman@caveman
@@ -89,6 +77,10 @@ Inside Claude Code, as two separate prompts:
 ```
 /plugin install ponytail@ponytail
 ```
+
+### Other harnesses
+
+Follow the install section for your harness in the [caveman INSTALL.md](https://github.com/JuliusBrussee/caveman/blob/main/INSTALL.md) and the [ponytail README](https://github.com/DietrichGebert/ponytail#readme).
 
 ## Running code
 
