@@ -1,17 +1,10 @@
 # Agent rules
 
-## Docs
-
-- Follow `docs/DESIGN.md`. Design change? Update it first, then code.
-- Open work in `docs/TODO.md`. Item done: delete its line in same commit.
-- Suggest review of all `.md` files often, at least after each feature.
-- Review: check docs against code, list stale parts, fix after user OK.
-
 ## Commits
 
 - Small commits. One logical step each.
-- No commit without user review and OK.
-- Title only, Conventional Commits: `type: imperative summary`.
+- No commit/push without user review and OK.
+- Branch, commit message, MR, read **`git-conventions`** skill.Once per session if already loaded. 
 - Lowercase after colon, no period, under 72 chars.
 - Never mention Claude or AI. No `Co-Authored-By` trailer.
 - Stage only files of that step.
@@ -56,19 +49,9 @@
 - Common module used by many is fine. It imports none of its users.
 - No circular imports.
 
-## Tooling
-
-- CLI tools: use `click`.
-- Run everything through `uv run`.
-- Add dependency: `uv add`. Dev tool: `uv add --dev`.
-- Hooks: `ruff check --fix`, `ruff format`, `ty check`.
-- Run all hooks: `uv run pre-commit run --all-files`.
-
 ## Writing style
 
 - Caveman and Ponytail style: most important info only, concise.
-- `AGENTS.md`, `docs/DESIGN.md`, `docs/TODO.md`: caveman style, fragments OK.
-- `README.md`: plain sentences.
 
 ## Subagents
 
